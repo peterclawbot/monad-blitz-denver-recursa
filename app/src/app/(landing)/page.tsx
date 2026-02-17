@@ -1000,8 +1000,6 @@ function Footer() {
             <Link href="/dashboard" className="hover:text-text transition-colors">App</Link>
             <a href="https://docs.recursa.ai" target="_blank" rel="noopener noreferrer" className="hover:text-text transition-colors">Docs</a>
             <a href="https://github.com/peterclawbot/monad-blitz-denver-recursa" target="_blank" rel="noopener noreferrer" className="hover:text-text transition-colors">GitHub</a>
-            <a href="https://x.com/recursa_ai" target="_blank" rel="noopener noreferrer" className="hover:text-text transition-colors">X / Twitter</a>
-            <a href="https://discord.gg/recursaai" target="_blank" rel="noopener noreferrer" className="hover:text-text transition-colors">Discord</a>
           </div>
 
           <div className="flex items-center gap-2 text-xs text-text-muted">
