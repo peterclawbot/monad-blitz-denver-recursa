@@ -10,19 +10,36 @@ var CONTRACTS = {
 var PROTOCOLS = {
   euler: {
     name: "Euler V2",
-    evc: "0x7a9324E8f270413fa2E458f5831226d99C7477CD"
+    contracts: {
+      evc: "0x7a9324E8f270413fa2E458f5831226d99C7477CD",
+      eVaultFactory: "0xba4Dd672062dE8FeeDb665DD4410658864483f1E",
+      vaultLens: "0x15d1cc54fb3f7c0498fc991a23d8dc00df3c32a0"
+    }
   },
   curvance: {
     name: "Curvance",
-    comptroller: "0xE01d426B589c7834a5F6B20D7e992A705d3c22ED"
+    contracts: {
+      centralRegistry: "0x1310f352f1389969Ece6741671c4B919523912fF",
+      oracleManager: "0x32faD39e79FAc67f80d1C86CbD1598043e52CDb6"
+    }
   },
   neverlend: {
     name: "Neverlend",
-    lendingPool: "0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585"
+    contracts: {
+      pool: "0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585",
+      poolDataProvider: "0xfd0b6b6F736376F7B99ee989c749007c7757fDba",
+      aaveOracle: "0x94bbA11004B9877d13bb5E1aE29319b6f7bDEdD4"
+    }
   },
   morpho: {
     name: "Morpho",
-    morphoBlue: "0x82b684483e844422FD339df0b67b3B111F02c66E"
+    contracts: {
+      morpho: "0xD5D960E8C380B724a48AC59E2DfF1b2CB4a1eAee",
+      bundler3: "0x82b684483e844422FD339df0b67b3B111F02c66E",
+      adaptiveCurveIrm: "0x09475a3D6eA8c314c592b1a3799bDE044E2F400F",
+      publicAllocator: "0xfd70575B732F9482F4197FE1075492e114E97302",
+      vaultV2Factory: "0x8B2F922162FBb60A6a072cC784A2E4168fB0bb0c"
+    }
   }
 };
 var TOKENS = {
@@ -43,22 +60,17 @@ var RecursaSDK = class {
       transport: http(config.rpcUrl || "https://monad.drpc.org")
     });
   }
-  // ─────────────────────────────────────────────────────────────
-  //                    RATE AGGREGATION
-  // ─────────────────────────────────────────────────────────────
   /**
    * Get lending rates across all protocols for a given asset
    */
   async getRates(asset) {
     const rates = [];
-    const protocols = ["Euler V2", "Curvance", "Morpho", "Neverlend"];
-    for (const protocol of protocols) {
+    const protocolNames = ["Euler V2", "Curvance", "Morpho", "Neverlend"];
+    for (const protocol of protocolNames) {
       rates.push({
         protocol,
         supplyAPY: 3 + Math.random() * 5,
-        // 3-8%
         borrowAPY: 5 + Math.random() * 7,
-        // 5-12%
         available: BigInt(Math.floor(Math.random() * 1e6)) * BigInt(10 ** 18)
       });
     }
@@ -76,9 +88,6 @@ var RecursaSDK = class {
       return rates.reduce((best, r) => r.borrowAPY < best.borrowAPY ? r : best);
     }
   }
-  // ─────────────────────────────────────────────────────────────
-  //                    POSITION MANAGEMENT
-  // ─────────────────────────────────────────────────────────────
   /**
    * Get a position by ID
    */
@@ -136,9 +145,6 @@ var RecursaSDK = class {
       return BigInt(0);
     }
   }
-  // ─────────────────────────────────────────────────────────────
-  //                      UTILITIES
-  // ─────────────────────────────────────────────────────────────
   /**
    * Check if an asset is whitelisted
    */
@@ -155,9 +161,6 @@ var RecursaSDK = class {
       return false;
     }
   }
-  /**
-   * Get the RPC client for advanced usage
-   */
   getClient() {
     return this.client;
   }

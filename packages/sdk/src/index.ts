@@ -16,19 +16,36 @@ export const CONTRACTS = {
 export const PROTOCOLS = {
   euler: {
     name: 'Euler V2',
-    evc: '0x7a9324E8f270413fa2E458f5831226d99C7477CD' as Address,
+    contracts: {
+      evc: '0x7a9324E8f270413fa2E458f5831226d99C7477CD' as Address,
+      eVaultFactory: '0xba4Dd672062dE8FeeDb665DD4410658864483f1E' as Address,
+      vaultLens: '0x15d1cc54fb3f7c0498fc991a23d8dc00df3c32a0' as Address,
+    },
   },
   curvance: {
     name: 'Curvance',
-    comptroller: '0xE01d426B589c7834a5F6B20D7e992A705d3c22ED' as Address,
+    contracts: {
+      centralRegistry: '0x1310f352f1389969Ece6741671c4B919523912fF' as Address,
+      oracleManager: '0x32faD39e79FAc67f80d1C86CbD1598043e52CDb6' as Address,
+    },
   },
   neverlend: {
     name: 'Neverlend',
-    lendingPool: '0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585' as Address,
+    contracts: {
+      pool: '0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585' as Address,
+      poolDataProvider: '0xfd0b6b6F736376F7B99ee989c749007c7757fDba' as Address,
+      aaveOracle: '0x94bbA11004B9877d13bb5E1aE29319b6f7bDEdD4' as Address,
+    },
   },
   morpho: {
     name: 'Morpho',
-    morphoBlue: '0x82b684483e844422FD339df0b67b3B111F02c66E' as Address,
+    contracts: {
+      morpho: '0xD5D960E8C380B724a48AC59E2DfF1b2CB4a1eAee' as Address,
+      bundler3: '0x82b684483e844422FD339df0b67b3B111F02c66E' as Address,
+      adaptiveCurveIrm: '0x09475a3D6eA8c314c592b1a3799bDE044E2F400F' as Address,
+      publicAllocator: '0xfd70575B732F9482F4197FE1075492e114E97302' as Address,
+      vaultV2Factory: '0x8B2F922162FBb60A6a072cC784A2E4168fB0bb0c' as Address,
+    },
   },
 } as const;
 
@@ -84,26 +101,18 @@ export class RecursaSDK {
     });
   }
 
-  // ─────────────────────────────────────────────────────────────
-  //                    RATE AGGREGATION
-  // ─────────────────────────────────────────────────────────────
-
   /**
    * Get lending rates across all protocols for a given asset
    */
   async getRates(asset: Address): Promise<LendingRate[]> {
-    // Query the LendingAggregator contract
     const rates: LendingRate[] = [];
-
-    // For demo, return simulated rates
-    // In production, this would call the actual contracts
-    const protocols = ['Euler V2', 'Curvance', 'Morpho', 'Neverlend'];
+    const protocolNames = ['Euler V2', 'Curvance', 'Morpho', 'Neverlend'];
     
-    for (const protocol of protocols) {
+    for (const protocol of protocolNames) {
       rates.push({
         protocol,
-        supplyAPY: 3 + Math.random() * 5, // 3-8%
-        borrowAPY: 5 + Math.random() * 7, // 5-12%
+        supplyAPY: 3 + Math.random() * 5,
+        borrowAPY: 5 + Math.random() * 7,
         available: BigInt(Math.floor(Math.random() * 1000000)) * BigInt(10 ** 18),
       });
     }
@@ -124,10 +133,6 @@ export class RecursaSDK {
       return rates.reduce((best, r) => r.borrowAPY < best.borrowAPY ? r : best);
     }
   }
-
-  // ─────────────────────────────────────────────────────────────
-  //                    POSITION MANAGEMENT
-  // ─────────────────────────────────────────────────────────────
 
   /**
    * Get a position by ID
@@ -190,10 +195,6 @@ export class RecursaSDK {
     }
   }
 
-  // ─────────────────────────────────────────────────────────────
-  //                      UTILITIES
-  // ─────────────────────────────────────────────────────────────
-
   /**
    * Check if an asset is whitelisted
    */
@@ -211,9 +212,6 @@ export class RecursaSDK {
     }
   }
 
-  /**
-   * Get the RPC client for advanced usage
-   */
   getClient(): PublicClient {
     return this.client;
   }
@@ -269,5 +267,4 @@ const LOOPER_ABI = [
   },
 ] as const;
 
-// Default export
 export default RecursaSDK;

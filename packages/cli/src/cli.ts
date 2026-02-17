@@ -3,7 +3,7 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
-import { createPublicClient, http, type Address, type PublicClient } from 'viem';
+import { createPublicClient, http, type Address } from 'viem';
 
 // ═══════════════════════════════════════════════════════════════
 //                         CONSTANTS
@@ -19,10 +19,26 @@ const CONTRACTS = {
 };
 
 const PROTOCOLS = {
-  euler: { name: 'Euler V2', evc: '0x7a9324E8f270413fa2E458f5831226d99C7477CD' },
-  curvance: { name: 'Curvance', comptroller: '0xE01d426B589c7834a5F6B20D7e992A705d3c22ED' },
-  neverlend: { name: 'Neverlend', lendingPool: '0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585' },
-  morpho: { name: 'Morpho', morphoBlue: '0x82b684483e844422FD339df0b67b3B111F02c66E' },
+  euler: {
+    name: 'Euler V2',
+    evc: '0x7a9324E8f270413fa2E458f5831226d99C7477CD',
+    eVaultFactory: '0xba4Dd672062dE8FeeDb665DD4410658864483f1E',
+  },
+  curvance: {
+    name: 'Curvance',
+    centralRegistry: '0x1310f352f1389969Ece6741671c4B919523912fF',
+    oracleManager: '0x32faD39e79FAc67f80d1C86CbD1598043e52CDb6',
+  },
+  neverlend: {
+    name: 'Neverlend',
+    pool: '0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585',
+    poolDataProvider: '0xfd0b6b6F736376F7B99ee989c749007c7757fDba',
+  },
+  morpho: {
+    name: 'Morpho',
+    morpho: '0xD5D960E8C380B724a48AC59E2DfF1b2CB4a1eAee',
+    bundler3: '0x82b684483e844422FD339df0b67b3B111F02c66E',
+  },
 };
 
 const TOKENS = {
@@ -68,20 +84,20 @@ const program = new Command();
 program
   .name('recursa')
   .description('CLI for RecursaAI - Lending Rate Aggregator on Monad')
-  .version('1.0.0');
+  .version('1.0.2');
 
 program
   .command('rates')
   .description('Get lending rates across all protocols')
   .option('-a, --asset <address>', 'Asset address (default: WMON)')
   .action(async (options) => {
-    const spinner = ora('Fetching rates...').start();
+    const spinner = ora('Fetching rates from 4 protocols...').start();
     
     try {
       const asset = (options.asset || TOKENS.WMON) as Address;
       const rates = await getRates(asset);
       
-      spinner.succeed('Rates fetched');
+      spinner.succeed('Rates fetched from Monad mainnet');
       
       console.log('\n' + chalk.bold('📊 Lending Rates on Monad'));
       console.log(chalk.dim('─'.repeat(50)));
@@ -107,7 +123,7 @@ program
   .argument('<action>', 'Action: supply or borrow')
   .option('-a, --asset <address>', 'Asset address (default: WMON)')
   .action(async (action, options) => {
-    const spinner = ora(`Finding best ${action} rate...`).start();
+    const spinner = ora(`Finding best ${action} rate across 4 protocols...`).start();
     
     try {
       const asset = (options.asset || TOKENS.WMON) as Address;
@@ -134,23 +150,32 @@ program
   .command('contracts')
   .description('List deployed contract addresses')
   .action(() => {
-    console.log('\n' + chalk.bold('📜 RecursaAI Contracts on Monad Mainnet'));
-    console.log(chalk.dim('─'.repeat(60)));
+    console.log('\n' + chalk.bold('📜 RecursaAI Contracts on Monad Mainnet (Chain 143)'));
+    console.log(chalk.dim('═'.repeat(60)));
     
-    console.log(`\n${chalk.cyan('Core:')}`);
+    console.log(`\n${chalk.cyan.bold('Core Contracts:')}`);
     console.log(`  LooperLite:        ${CONTRACTS.looperLite}`);
     console.log(`  LendingAggregator: ${CONTRACTS.lendingAggregator}`);
     
-    console.log(`\n${chalk.cyan('Adapters:')}`);
+    console.log(`\n${chalk.cyan.bold('Adapters (Real):')}`);
     console.log(`  NeverlendAdapter:  ${CONTRACTS.neverlendAdapter}`);
     console.log(`  MaceAdapter:       ${CONTRACTS.maceAdapter}`);
     
-    console.log(`\n${chalk.cyan('Protocols:')}`);
-    for (const [key, protocol] of Object.entries(PROTOCOLS)) {
-      console.log(`  ${protocol.name}: ${Object.values(protocol)[1]}`);
-    }
+    console.log(`\n${chalk.cyan.bold('Integrated Protocols:')}`);
+    console.log(`  ${chalk.white('Euler V2')}`);
+    console.log(`    EVC:             ${PROTOCOLS.euler.evc}`);
+    console.log(`    eVaultFactory:   ${PROTOCOLS.euler.eVaultFactory}`);
+    console.log(`  ${chalk.white('Curvance')}`);
+    console.log(`    CentralRegistry: ${PROTOCOLS.curvance.centralRegistry}`);
+    console.log(`    OracleManager:   ${PROTOCOLS.curvance.oracleManager}`);
+    console.log(`  ${chalk.white('Neverlend')}`);
+    console.log(`    Pool:            ${PROTOCOLS.neverlend.pool}`);
+    console.log(`    DataProvider:    ${PROTOCOLS.neverlend.poolDataProvider}`);
+    console.log(`  ${chalk.white('Morpho')}`);
+    console.log(`    Morpho:          ${PROTOCOLS.morpho.morpho}`);
+    console.log(`    Bundler3:        ${PROTOCOLS.morpho.bundler3}`);
     
-    console.log(`\n${chalk.cyan('Tokens:')}`);
+    console.log(`\n${chalk.cyan.bold('Tokens:')}`);
     console.log(`  WMON: ${TOKENS.WMON}`);
     console.log(`  USDC: ${TOKENS.USDC}`);
   });
@@ -159,18 +184,40 @@ program
   .command('protocols')
   .description('List supported lending protocols')
   .action(() => {
-    console.log('\n' + chalk.bold('🏦 Supported Protocols'));
-    console.log(chalk.dim('─'.repeat(40)));
+    console.log('\n' + chalk.bold('🏦 Supported Protocols on Monad'));
+    console.log(chalk.dim('─'.repeat(50)));
     
     const protocols = [
-      { name: 'Euler V2', status: '✅ Live' },
-      { name: 'Curvance', status: '✅ Live' },
-      { name: 'Morpho', status: '✅ Live' },
-      { name: 'Neverlend', status: '✅ Live (Real Adapter)' },
+      { name: 'Euler V2', type: 'EVK-based', status: '✅ Integrated' },
+      { name: 'Curvance', type: 'Compound-style', status: '✅ Integrated' },
+      { name: 'Morpho', type: 'Peer-to-peer', status: '✅ Integrated' },
+      { name: 'Neverlend', type: 'Aave V3 fork', status: '✅ Real Adapter' },
     ];
     
     for (const p of protocols) {
-      console.log(`  ${chalk.cyan(p.name)}: ${chalk.green(p.status)}`);
+      console.log(`\n  ${chalk.cyan.bold(p.name)} ${chalk.dim(`(${p.type})`)}`);
+      console.log(`    Status: ${chalk.green(p.status)}`);
+    }
+    
+    console.log('\n' + chalk.dim('─'.repeat(50)));
+    console.log(`${chalk.bold('DEX Integration:')} Mace Router ✅`);
+  });
+
+program
+  .command('test')
+  .description('Test connection to Monad mainnet')
+  .action(async () => {
+    const spinner = ora('Testing connection to Monad mainnet...').start();
+    
+    try {
+      const blockNumber = await client.getBlockNumber();
+      spinner.succeed(`Connected to Monad mainnet`);
+      console.log(`  Current block: ${chalk.cyan(blockNumber.toString())}`);
+      console.log(`  Chain ID: ${chalk.cyan('143')}`);
+      console.log(`  RPC: ${chalk.dim('monad.drpc.org')}`);
+    } catch (error) {
+      spinner.fail('Connection failed');
+      console.error(chalk.red(error));
     }
   });
 

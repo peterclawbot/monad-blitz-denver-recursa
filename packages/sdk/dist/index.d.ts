@@ -10,19 +10,36 @@ declare const CONTRACTS: {
 declare const PROTOCOLS: {
     readonly euler: {
         readonly name: "Euler V2";
-        readonly evc: Address;
+        readonly contracts: {
+            readonly evc: Address;
+            readonly eVaultFactory: Address;
+            readonly vaultLens: Address;
+        };
     };
     readonly curvance: {
         readonly name: "Curvance";
-        readonly comptroller: Address;
+        readonly contracts: {
+            readonly centralRegistry: Address;
+            readonly oracleManager: Address;
+        };
     };
     readonly neverlend: {
         readonly name: "Neverlend";
-        readonly lendingPool: Address;
+        readonly contracts: {
+            readonly pool: Address;
+            readonly poolDataProvider: Address;
+            readonly aaveOracle: Address;
+        };
     };
     readonly morpho: {
         readonly name: "Morpho";
-        readonly morphoBlue: Address;
+        readonly contracts: {
+            readonly morpho: Address;
+            readonly bundler3: Address;
+            readonly adaptiveCurveIrm: Address;
+            readonly publicAllocator: Address;
+            readonly vaultV2Factory: Address;
+        };
     };
 };
 declare const TOKENS: {
@@ -75,9 +92,6 @@ declare class RecursaSDK {
      * Check if an asset is whitelisted
      */
     isAssetWhitelisted(asset: Address): Promise<boolean>;
-    /**
-     * Get the RPC client for advanced usage
-     */
     getClient(): PublicClient;
 }
 
