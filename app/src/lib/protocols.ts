@@ -44,13 +44,16 @@ export const PROTOCOLS = {
     name: "Morpho",
     logo: "🦋",
     contracts: {
-      // Morpho Blue core
-      morphoBlue: "0x82b684483e844422FD339df0b67b3B111F02c66E" as `0x${string}`,
-      bundler: "0xD5D960E8C380B724a48AC59E2DfF1b2CB4a1eAee" as `0x${string}`,
-      irm: "0x09475a3D6eA8c314c592b1a3799bDE044E2F400F" as `0x${string}`,
-      oracle: "0x6C3A89e814A9D150cD763f443dceE5EBC5bF60b6" as `0x${string}`,
-      vault1: "0xA16B49505e39C373A8f9e1b1540514BA64B3942a" as `0x${string}`,
-      vault2: "0x0a3c9f732C7E987ddbBaac13309A8B552aa50872" as `0x${string}`,
+      // Morpho Blue core (from John's official list)
+      morpho: "0xD5D960E8C380B724a48AC59E2DfF1b2CB4a1eAee" as `0x${string}`,
+      bundler3: "0x82b684483e844422FD339df0b67b3B111F02c66E" as `0x${string}`,
+      adaptiveCurveIrm: "0x09475a3D6eA8c314c592b1a3799bDE044E2F400F" as `0x${string}`,
+      publicAllocator: "0xfd70575B732F9482F4197FE1075492e114E97302" as `0x${string}`,
+      metaMorphoFactory: "0x33f20973275B2F574488b18929cd7DCBf1AbF275" as `0x${string}`,
+      oracleFactory: "0xC8659Bcd5279DB664Be973aEFd752a5326653739" as `0x${string}`,
+      vaultV2Factory: "0x8B2F922162FBb60A6a072cC784A2E4168fB0bb0c" as `0x${string}`,
+      preLiquidationFactory: "0xB5b3e541abD19799E0c65905a5a42BD37d6c94c0" as `0x${string}`,
+      urdFactory: "0xE8233125be3ecD274b8007618315Dd2f3361eced" as `0x${string}`,
     },
   },
 } as const;
