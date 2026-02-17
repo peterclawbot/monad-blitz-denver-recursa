@@ -7,37 +7,30 @@ export const PROTOCOLS = {
     name: "Euler V2",
     logo: "🔷",
     contracts: {
-      // EVC or core contracts
+      // Euler Vault Kit (EVK) - official addresses
       evc: "0x7a9324E8f270413fa2E458f5831226d99C7477CD" as `0x${string}`,
-      vaultFactory: "0x831257BFa5478111d2327e08c4068ec37Ac14B81" as `0x${string}`,
-      oracle: "0xba4Dd672062dE8FeeDb665DD4410658864483f1E" as `0x${string}`,
+      eVaultFactory: "0xba4Dd672062dE8FeeDb665DD4410658864483f1E" as `0x${string}`,
+      vaultLens: "0x15d1cc54fb3f7c0498fc991a23d8dc00df3c32a0" as `0x${string}`,
     },
   },
   curvance: {
     name: "Curvance",
     logo: "🔶",
     contracts: {
-      // Core contracts
-      comptroller: "0xE01d426B589c7834a5F6B20D7e992A705d3c22ED" as `0x${string}`,
-      marketManager: "0xAd4AA2a713fB86FBb6b60dE2aF9E32a11DB6Abf2" as `0x${string}`,
-      priceRouter: "0xF32B334042DC1EB9732454cc9bc1a06205d184f2" as `0x${string}`,
-      cToken1: "0x852FF1EC21D63b405eC431e04AE3AC760e29263D" as `0x${string}`,
-      cToken2: "0x1e240E30E51491546deC3aF16B0b4EAC8Dd110D4" as `0x${string}`,
+      // Curvance (Compound-style) - official addresses
+      centralRegistry: "0x1310f352f1389969Ece6741671c4B919523912fF" as `0x${string}`,
+      oracleManager: "0x32faD39e79FAc67f80d1C86CbD1598043e52CDb6" as `0x${string}`,
+      // Market managers vary per pair
     },
   },
   neverlend: {
     name: "Neverlend",
     logo: "🌙",
     contracts: {
-      // Core lending pool contracts
-      lendingPool: "0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585" as `0x${string}`,
-      poolAddressProvider: "0x57ea245cCbFAb074baBb9d01d1F0c60525E52cec" as `0x${string}`,
-      dataProvider: "0x800409dBd7157813BB76501c30e04596Cc478f25" as `0x${string}`,
-      oracle: "0xBB4738D05AD1b3Da57a4881baE62Ce9bb1eEeD6C" as `0x${string}`,
-      aToken1: "0xAD96C3dffCD6374294e2573A7fBBA96097CC8d7c" as `0x${string}`,
-      aToken2: "0x3acA285b9F57832fF55f1e6835966890845c1526" as `0x${string}`,
-      aToken3: "0x38648958836eA88b368b4ac23b86Ad44B0fe7508" as `0x${string}`,
-      aToken4: "0x784999fc2Dd132a41D1Cc0F1aE9805854BaD1f2D" as `0x${string}`,
+      // Neverlend (Aave V3 fork) - official addresses
+      pool: "0x80F00661b13CC5F6ccd3885bE7b4C9c67545D585" as `0x${string}`,
+      poolDataProvider: "0xfd0b6b6F736376F7B99ee989c749007c7757fDba" as `0x${string}`,
+      aaveOracle: "0x94bbA11004B9877d13bb5E1aE29319b6f7bDEdD4" as `0x${string}`,
     },
   },
   morpho: {
